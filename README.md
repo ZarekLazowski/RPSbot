@@ -1,0 +1,1 @@
+A bot that plays RPS against you
