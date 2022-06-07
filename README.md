@@ -12,7 +12,7 @@ A bot that plays RPS against you
 # TODO
 - [x] Create Bot
 - [ ] Implementation of /rps
--    [ ] 33/33/33 chance to choose rock paper or scissors
--    [ ] Keep track of W/L for each user
--    [ ] Learning AI that attempts to predict move
+- [ ]    33/33/33 chance to choose rock paper or scissors
+- [ ]    Keep track of W/L for each user
+- [ ]    Learning AI that attempts to predict move
 - [ ] Implementation of /ratio
