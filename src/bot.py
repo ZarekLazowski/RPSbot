@@ -13,6 +13,7 @@ class RPSbot(commands.Bot):
         print(f'{self.user} has connected to Discord')
 
     def command_setup(self):
+        # Play Rock, Paper, Scissors with a user in their DMs
         @self.command(name='rps')
         async def rps_cmd(context):
             # Start DM with user
@@ -37,6 +38,12 @@ class RPSbot(commands.Bot):
             except(asyncio.TimeoutError):
                 await dm_channel.send('You took too long')
                 print('Timeout occured')
+        
+        # Flip a coin for the user
+        @self.command(name='flip')
+        async def flip_cmd(context):
+            # Determine side and send back to user
+            await context.send(rps.coin_flip())
 
 
 if __name__ == '__main__':
