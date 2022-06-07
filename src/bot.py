@@ -1,12 +1,8 @@
 # RPS bot, plays rock paper scissors against a user
 
-import os
+import os, rps, asyncio
 from discord.ext import commands
 from dotenv import load_dotenv
-
-# Load bot token from environment
-load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
 
 class RPSbot(commands.Bot):
     def __init__(self, command_prefix='/', self_bot=False):
@@ -18,14 +14,38 @@ class RPSbot(commands.Bot):
 
     def command_setup(self):
         @self.command(name='rps')
-        async def rps(context):
+        async def rps_cmd(context):
             # Start DM with user
             dm_channel = await context.author.create_dm()
 
-            # DM test message
-            content = 'Test message'
-            await dm_channel.send(content)
+            await dm_channel.send('Rock, Paper, Scissors, Shoot!')
 
-bot = RPSbot()
+            try:
+                def check(msg):
+                    return any(opt in msg.content.lower() for opt in rps.rps_choice) and msg.channel == dm_channel
 
-bot.run(TOKEN)
+                # Wait for user to send message
+                with dm_channel.typing():
+                    # Grab message when received, timeout after 30 sec
+                    msg = await self.wait_for('message', check=check, timeout=30)
+
+                    # Send its choice
+                    await dm_channel.send(rps.rps_rand())
+
+                    # TODO: check to see if it won or not
+            
+            except(asyncio.TimeoutError):
+                await dm_channel.send('You took too long')
+                print('Timeout occured')
+
+
+if __name__ == '__main__':
+    # Load bot token from environment
+    load_dotenv()
+    TOKEN = os.getenv('DISCORD_TOKEN')
+
+    # Create bot object
+    bot = RPSbot()
+
+    # Run bot
+    bot.run(TOKEN)
