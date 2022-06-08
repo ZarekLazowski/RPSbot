@@ -19,19 +19,21 @@ class RPSbot(commands.Bot):
             # Start DM with user
             dm_channel = await context.author.create_dm()
 
-            await dm_channel.send('Best of three! Rock, Paper, Scissors, Shoot!')
-
             # Stat bookkeeping
             wins = 0
             loss = 0
             game = 1
 
+            pretext = 'Best of three! Rock, Paper, Scissors, Shoot!\n'
+
             # Keep playing until user or bot wins twice
             while wins < 2 and loss < 2:
                 if wins == loss and game == 1:
-                    await dm_channel.send('Game 1')
+                    pretext += 'Game 1'
                 else:
-                    await dm_channel.send(str(wins) + ' to ' + str(loss) + '! Game ' + str(game))
+                    pretext += str(wins) + ' to ' + str(loss) + '! Game ' + str(game)
+
+                await dm_channel.send(pretext)
 
                 def check(msg):
                     return any(opt in msg.content.lower() for opt in rps.rps_keyword) \
@@ -71,6 +73,9 @@ class RPSbot(commands.Bot):
                     
                 # Increment game counter
                 game += 1
+
+                # Clear pretext
+                pretext = ''
 
             # Post game wrapup. TODO: implement per user stat tracking
             if loss == 2:
