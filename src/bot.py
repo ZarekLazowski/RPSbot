@@ -24,7 +24,8 @@ class RPSbot(commands.Bot):
             loss = 0
             game = 1
 
-            pretext = 'Best of three! Rock, Paper, Scissors, Shoot!\n'
+            # Display introduction text
+            pretext = rps.rps_intro
 
             # Keep playing until user or bot wins twice
             while wins < 2 and loss < 2:
@@ -56,14 +57,17 @@ class RPSbot(commands.Bot):
                         await dm_channel.send('Coward')
                         break
 
-                    # Get RPS response
-                    resp = rps.rps_rand()
-
+                    # Respond with same style (emote vs word)
+                    if msg.content.isalpha():
+                        resp = rps.rps_rand()
+                    else:
+                        resp = rps.rps_erand()
+                    
                     # Send its choice
                     await dm_channel.send(resp)
 
                 # Check winner
-                res = rps.rps_winner(resp, msg.content.lower())
+                res = rps.rps_winner(resp, msg.content)
 
                 # Do thing based on winner
                 if res == 'bot':
