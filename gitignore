@@ -2,7 +2,9 @@
 .venv
 
 # Environment Variables
+*.env
 src/.env
 
 # Python stuff
 *.pyc
+src/__pycache__
