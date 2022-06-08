@@ -2,7 +2,6 @@
 .venv
 
 # Environment Variables
-*.env
 src/.env
 
 # Python stuff
