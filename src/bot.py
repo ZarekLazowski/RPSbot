@@ -9,6 +9,10 @@ class RPSbot(commands.Bot):
         commands.Bot.__init__(self, command_prefix=command_prefix, self_bot=self_bot)
         self.command_setup()
 
+    def __del__(self):
+        # Call default delete command
+        commands.Bot.__del__(self)
+
     async def on_ready(self):
         print(f'{self.user} has connected to Discord')
 
@@ -41,7 +45,7 @@ class RPSbot(commands.Bot):
                     and msg.channel == dm_channel \
                     and msg.author != self.user
 
-            # Wait for user to send message
+            # Display 'typing' while waiting for user input
             with dm_channel.typing():
                 try:
                     # Grab message when received, timeout after 30 sec
@@ -53,6 +57,7 @@ class RPSbot(commands.Bot):
                     loss = 2
                     break
 
+                # User quits early
                 if msg.content.lower() == 'quit':
                     await dm_channel.send('Coward')
                     break
@@ -97,9 +102,9 @@ class RPSbot(commands.Bot):
             dm_channel = await context.author.create_dm()
 
             # Do the game in DMs
-            res = await self.do_rps_game(dm_channel)
+            res = await self.do_rps_game(dm_channel) 
 
-            # Report back to the guild who won/lost
+            # Report back to the guild who won/lost. TODO: Add logic to keep track of user stats
             if res == 'lose':
                 report = context.author.display_name + ' is a loser'
             else:
