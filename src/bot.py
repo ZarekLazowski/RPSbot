@@ -1,12 +1,14 @@
 # RPS bot, plays rock paper scissors against a user
 
-import os, rps, asyncio
+import os, rps, asyncio, discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
 class RPSbot(commands.Bot):
     def __init__(self, command_prefix='/', self_bot=False):
-        commands.Bot.__init__(self, command_prefix=command_prefix, self_bot=self_bot)
+        intents = discord.Intents.default()
+        intents.message_content = True
+        commands.Bot.__init__(self, command_prefix=command_prefix, self_bot=self_bot, intents=intents)
         self.command_setup()
 
     def __del__(self):
@@ -46,7 +48,7 @@ class RPSbot(commands.Bot):
                     and msg.author != self.user
 
             # Display 'typing' while waiting for user input
-            with dm_channel.typing():
+            async with dm_channel.typing():
                 try:
                     # Grab message when received, timeout after 30 sec
                     msg = await self.wait_for('message', check=check, timeout=30)
