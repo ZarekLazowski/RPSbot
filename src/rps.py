@@ -14,6 +14,11 @@ def rps_rand() -> str:
 def rps_erand() -> str:
     return random.choice(rps_echoice)
 
+'''
+rps_winner
+
+returns: True on user win, False on bot win
+'''
 def rps_winner(bot: str, usr: str) -> str:
     # Convert string to indices
     # Word response
