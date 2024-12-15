@@ -16,12 +16,13 @@ def rps_rand() -> str:
 def rps_erand() -> str:
     return random.choice(rps_echoice)
 
-'''
-rps_winner
-
-returns: True on user win, False on bot win
-'''
 def rps_winner(bot: str, usr: str) -> str:
+    '''
+    Determine the winner of RPS round
+
+    Returns:
+        `Bool` True on user win, False on bot win
+    '''
     # Convert string to indices
     # Word response
     if bot.isalpha():

@@ -6,7 +6,7 @@ A bot that plays RPS against you
 | Command | Implemented | Function |
 |---------|-------------|----------|
 | /rps    | Partially   | Play RPS with the bot |
-| /stats  | No          | Display W/L ratio with user (can specify user) |
+| /stats  | Partially   | Display W/L ratio with user (can specify user) |
 | /flip   | Yes         | Flip a coin, respond with "Heads" or "Tails" |
 
 # TODO

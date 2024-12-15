@@ -1,5 +1,4 @@
 from user import user_stats
-import rps
 
 class game_session():
     username: str
@@ -47,6 +46,9 @@ class game_session():
     def finish_game(self) -> str:
         '''
         Wrap up the RPS match, cleanup, save scores
+
+        Returns:
+            `str` Message indicating final game status
         '''
         results = ""
 
