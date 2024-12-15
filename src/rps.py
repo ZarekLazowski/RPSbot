@@ -1,6 +1,8 @@
 import random
 
-rps_intro = 'Best of three!\nRespond with "rock", "paper", "scissors" to play\nYou can also respond with \U0001FAA8, \U0001F4C4, or \U00002702\n\nReady? Rock, Paper, Scissors, Shoot!\n'
+rps_intro = 'Best of three!\n' + \
+            'Respond with "rock", "paper", "scissors" to play or "quit" to forfeit\n' + \
+            'You can also respond with :rock:, :page_facing_up:, or :scissors:\n\nReady? Rock, Paper, Scissors, Shoot!\n'
 
 rps_keyword = ("rock", "paper", "scissors", "quit", "\U0001FAA8", "\U0001F4C4", "\U00002702")
 

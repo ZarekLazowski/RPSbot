@@ -1,5 +1,5 @@
-import os, rps, asyncio
 from user import user_stats
+import rps
 
 class game_session():
     username: str
@@ -11,7 +11,7 @@ class game_session():
     def __init__(self, username: str):
         self.username = username
         self.user = user_stats(username)
-        self.rounds = 0
+        self.rounds = 1
         self.wins = 0
         self.loss = 0
 
@@ -34,15 +34,24 @@ class game_session():
             return "Game 1"
         else:
             return str(self.wins) + " to " + str(self.loss) + "! Game " + str(self.rounds)
+        
+    def user_has_won(self) -> bool:
+        '''
+        A valid win will go until the user has accumulated 2 wins (BO3).
 
-    '''
-    Wrap up the RPS match, cleanup, save scores
-    '''
+        Returns:
+            `bool` Representing if the user has won this game
+        '''
+        return self.wins == 2
+
     def finish_game(self) -> str:
+        '''
+        Wrap up the RPS match, cleanup, save scores
+        '''
         results = ""
 
         # Determine win vs loss
-        if self.wins > self.loss:
+        if self.user_has_won():
             results = " won this time"
             self.user.inc_wins()
         else:
@@ -50,7 +59,7 @@ class game_session():
             self.user.inc_loss()
 
         # Save statistics for future use
-        self.user.save_info()
+        self.user.save_file()
         
         # Return results as string for main channel
         return self.username + results

@@ -1,4 +1,5 @@
-import os, rps, asyncio
+import os
+from pathlib import Path
 
 class user_stats():
     username:    str
@@ -6,46 +7,63 @@ class user_stats():
     num_win:     int
     num_loss:    int
 
+    stat_location:str = "stats"
+    file_ext:str = ".stat"
+
     def __init__(self, username:str):
         self.username = username
+        self.tot_matches = 0
+        self.num_win = 0
+        self.num_loss = 0
 
-        self.load_info()
+        path = self.get_filepath()
+
+        if path.exists():
+            self.load_file()
+        else:
+            self.save_file()
     
-    def get_filename(self):
-        return self.username + ".stats"
+    def get_filepath(self):
+        return Path(os.sep.join([self.stat_location, self.username + self.file_ext]))
 
-    '''
-    Save game stat info into a human-readable format
-    '''
-    def save_info(self):
+    def save_file(self):
+        '''
+        Save game stat info into a human-readable format
+        '''
         # Open stats file, create if it doesn't exist
-        with open(self.get_filename(), "w+") as stat_file:
+        with open(self.get_filepath(), "w+") as stat_file:
             stat_file.write(f"{self.tot_matches}\n{self.num_win}\n{self.num_loss}")
 
-
-    '''
-    Load game stat info from stat file
-    '''
-    def load_info(self):
-        with open(self.get_filename(), "r") as stat_file:
-            # If this is a new user init the stats to 0
-            if not stat_file:
-                self.tot_matches = 0
-                self.num_win = 0
-                self.num_loss = 0
-                return
-            
-            # Otherwise parse the file for their information
+    def load_file(self):
+        '''
+        Load game stat info from stat file
+        '''
+        with open(self.get_filepath(), "r") as stat_file:
             lines = stat_file.readlines()
-
             self.tot_matches = int(lines[0])
             self.num_win = int(lines[1])
             self.num_loss = int(lines[2])
 
     def inc_wins(self):
+        '''
+        Mark a won game (player's perspective)
+        '''
         self.num_win += 1
         self.tot_matches += 1
     
     def inc_loss(self):
+        '''
+        Mark a lost game (player's perspective)
+        '''
         self.num_loss += 1
         self.tot_matches += 1
+
+    def dump_stats(self):
+        '''
+        Get a summary of the games against this user.
+
+        Returns:
+            `str` Summary of total number of games, number of wins, number of losses
+        '''
+        return f"{self.username} has played {self.tot_matches} games\n" + \
+            f"They have won {self.num_win} games and lost {self.num_loss}"

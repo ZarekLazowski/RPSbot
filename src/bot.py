@@ -20,18 +20,16 @@ class RPSbot(commands.Bot):
     async def on_ready(self):
         print(f'{self.user} has connected to Discord')
 
-    '''
-    Run RPS logic
-    '''
     async def do_rps_game(self, dm_channel: discord.DMChannel, game: game_session):
+        '''
+        Run RPS logic
+        '''
         # Display introduction text
-        output = rps.rps_intro
+        await dm_channel.send(rps.rps_intro)
 
         # Keep playing until user or bot wins twice
         while game.continue_game():
-            output += game.round_start()
-
-            await dm_channel.send(output)
+            await dm_channel.send(game.round_start())
 
             # Check if a received command is valid
             def check(msg):
@@ -69,19 +67,14 @@ class RPSbot(commands.Bot):
                 # Send its choice
                 await dm_channel.send(resp)
 
-            # Check winner
-            res = rps.rps_winner(resp, msg.content)
-
-            # Do thing based on winner
-            game.update_stats(res)
-
-            # Clear pretext
-            output = ''
+            # Check winner and record stats
+            game.update_stats(rps.rps_winner(resp, msg.content))
         
-        # Report who won and who lost
-        if game.wins == 2:
+        # Say goodbye to the player
+        if game.user_has_won():
             await dm_channel.send('ggs, I\'ll train harder')
         else:
+            # On timeout or quit
             await dm_channel.send('ggs, better luck next time')
 
     def command_setup(self):
@@ -97,8 +90,14 @@ class RPSbot(commands.Bot):
             # Do the game in DMs
             await self.do_rps_game(dm_channel, game)
 
-            report = game.finish_game()
-            await context.channel.send(report)
+            # Report status of game to channel
+            await context.channel.send(game.finish_game())
+
+        @self.command(name='stats')
+        async def stat_cmd(context: commands.context):
+            user = user_stats(context.author.display_name)
+
+            await context.send(user.dump_stats())
         
         # Flip a coin for the user
         @self.command(name='flip')

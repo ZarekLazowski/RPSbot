@@ -4,6 +4,9 @@
 # Environment Variables
 src/.env
 
+# Game statistics
+stats
+
 # Python stuff
 *.pyc
 src/__pycache__
