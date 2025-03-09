@@ -11,11 +11,6 @@ class RPSbot(commands.Bot):
         intents = discord.Intents.default()
         intents.message_content = True
         commands.Bot.__init__(self, command_prefix=command_prefix, self_bot=self_bot, intents=intents)
-        self.command_setup()
-
-    def __del__(self):
-        # Call default delete command
-        commands.Bot.__del__(self)
 
     async def on_ready(self):
         print(f'{self.user} has connected to Discord')
@@ -77,42 +72,53 @@ class RPSbot(commands.Bot):
             # On timeout or quit
             await dm_channel.send('ggs, better luck next time')
 
-    def command_setup(self):
-        # Play Rock, Paper, Scissors with a user in their DMs
-        @self.command(name='rps')
-        async def rps_cmd(context: commands.context):
-            # Start DM with user
-            dm_channel = await context.author.create_dm()
-            
-            # Grab user stats and create a new session
-            game = game_session(context.author.display_name)
-
-            # Do the game in DMs
-            await self.do_rps_game(dm_channel, game)
-
-            # Report status of game to channel
-            await context.channel.send(game.finish_game())
-
-        @self.command(name='stats')
-        async def stat_cmd(context: commands.context):
-            user = user_stats(context.author.display_name)
-
-            await context.send(user.dump_stats())
-        
-        # Flip a coin for the user
-        @self.command(name='flip')
-        async def flip_cmd(context):
-            # Determine side and send back to user
-            await context.send(rps.coin_flip())
-
-
 if __name__ == '__main__':
     # Load bot token from environment
     load_dotenv()
     TOKEN = os.getenv('DISCORD_TOKEN')
+    OWNER_ID = os.getenv('OWNER_ID')
 
     # Create bot object
     bot = RPSbot()
+
+    ############################################################################
+    # Bot Commands
+    ############################################################################
+    @bot.hybrid_command(name='sync', description='Owner only. Syncs commands with discord')
+    async def sync(context: commands.context):
+        if str(context.author.id) == OWNER_ID:
+            commands = await bot.tree.sync()
+            print(f"Commands synced:\n{commands}")
+
+            await context.send("Commands synced.")
+        else:
+            await context.send("Owner only command.")
+
+    @bot.hybrid_command(name='rps', description='Play RPS in DMs with me')
+    async def rps_cmd(context: commands.context):
+        # Start DM with user
+        dm_channel = await context.author.create_dm()
+        
+        # Grab user stats and create a new session
+        game = game_session(context.author.display_name)
+
+        # Do the game in DMs
+        await bot.do_rps_game(dm_channel, game)
+
+        # Report status of game to channel
+        await context.channel.send(game.finish_game())
+
+    @bot.hybrid_command(name='stats', description='Display RPS stats')
+    async def stat_cmd(context: commands.context):
+        user = user_stats(context.author.display_name)
+
+        await context.send(user.dump_stats())
+
+    # Flip a coin for the user
+    @bot.hybrid_command(name='flip', description='Flip a coin')
+    async def flip_cmd(context):
+        # Determine side and send back to user
+        await context.send(rps.coin_flip())
 
     # Run bot
     bot.run(TOKEN)

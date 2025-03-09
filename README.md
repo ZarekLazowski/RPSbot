@@ -2,6 +2,15 @@ A bot that plays RPS against you
 
 ---
 
+# Setup
+
+This bot uses `dotenv` library to load information about how this tool is being
+run. In order to use this bot, you must:
+ * Have your own discord bot account you manage
+ * Have a file `.env` in the source folder with the following items
+     * `DISCORD_TOKEN`: Token associated with your bot
+     * `OWNER_ID`: Your discord user ID
+
 # Commands
 | Command | Implemented | Function |
 |---------|-------------|----------|
